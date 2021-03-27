@@ -80,6 +80,12 @@ function detach(node) {
 function element(name) {
     return document.createElement(name);
 }
+function text(data) {
+    return document.createTextNode(data);
+}
+function space() {
+    return text(' ');
+}
 function attr(node, attribute, value) {
     if (value == null)
         node.removeAttribute(attribute);
@@ -369,19 +375,7 @@ function applyCss(context, styles) {
     return context;
 }
 function ripple(rippleContainer, color) {
-    if (rippleContainer.children[0]) {
-        applyCss(rippleContainer, {
-            borderRadius: getComputedStyle(rippleContainer.children[0]).borderRadius,
-        });
-    }
     function onClick(event) {
-        // const rippleContainer: HTMLElement | null = node.closest(
-        //   ".ripple-container"
-        // );
-        // if (!rippleContainer) {
-        //   console.warn(".ripple-container class not found");
-        //   return;
-        // }
         const { width, height, top, left, } = rippleContainer.getBoundingClientRect();
         const largestSide = Math.max(width, height);
         const y = event.y - top;
@@ -411,23 +405,21 @@ function ripple(rippleContainer, color) {
             position: "absolute",
             opacity: "0.38",
             borderRadius: "50%",
-            transition: "all 350ms cubic-bezier(0.05, 0.12, 0.15, 0.06)",
+            transform: "scale(0)",
+            transition: "transform 700ms cubic-bezier(0.05, 0.12, 0.15, 0.06), opacity 400ms cubic-bezier(0.05, 0.12, 0.15, 0.06)",
             transitionDelay: "50ms",
             pointerEvents: "none",
         });
         setTimeout(() => {
             applyCss(ripple, {
-                width: `${2 * largestSide}px`,
-                height: `${2 * largestSide}px`,
-                top: `${y - largestSide}px`,
-                left: `${x - largestSide}px`,
+                transform: `scale(${largestSide * 0.2}) translate3d(0,0,0)`,
                 opacity: "0",
             });
             applyCss(tap, {
                 opacity: "0",
                 transform: "scale(1) translate3d(0,0,0)",
             });
-        }, 0);
+        }, 16);
         rippleContainer.appendChild(ripple);
         rippleContainer.appendChild(tap);
         ripple.addEventListener("transitionend", function listener() {
@@ -439,7 +431,7 @@ function ripple(rippleContainer, color) {
             }, 200);
         });
     }
-    rippleContainer.addEventListener("click", onClick);
+    rippleContainer.addEventListener("click", onClick, true);
     return {
         destroy() {
             rippleContainer.removeEventListener("click", onClick);
@@ -452,13 +444,15 @@ const file = "src/Ripple.svelte";
 
 function add_css() {
 	var style = element("style");
-	style.id = "svelte-1jwa37e-style";
-	style.textContent = ".ripple-container.svelte-1jwa37e{position:relative;overflow:hidden;display:inline-block}\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiUmlwcGxlLnN2ZWx0ZSIsIm1hcHBpbmdzIjoiQUFZRSxpQkFBaUIsZUFBQyxDQUFBLEFBQ2hCLFFBQVEsQ0FBRSxRQUFRLENBQ2xCLFFBQVEsQ0FBRSxNQUFNLENBQ2hCLE9BQU8sQ0FBRSxZQUFZLEFBQ3ZCLENBQUEiLCJuYW1lcyI6W10sInNvdXJjZXMiOlsiUmlwcGxlLnN2ZWx0ZSJdfQ== */";
+	style.id = "svelte-1qfvpiv-style";
+	style.textContent = ".svelte-1qfvpiv{box-sizing:border-box}.ripple-container.svelte-1qfvpiv{position:relative;display:inline-block}.ripple.svelte-1qfvpiv{position:absolute;overflow:hidden;top:0;left:0;height:100%;width:100%}\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiUmlwcGxlLnN2ZWx0ZSIsIm1hcHBpbmdzIjoiQUFjRSxlQUFFLENBQUEsQUFDQSxVQUFVLENBQUUsVUFBVSxBQUN4QixDQUFBLEFBRUEsaUJBQWlCLGVBQUMsQ0FBQSxBQUNoQixRQUFRLENBQUUsUUFBUSxDQUNsQixPQUFPLENBQUUsWUFBWSxBQUN2QixDQUFBLEFBRUEsT0FBTyxlQUFDLENBQUEsQUFDTixRQUFRLENBQUUsUUFBUSxDQUNsQixRQUFRLENBQUUsTUFBTSxDQUNoQixHQUFHLENBQUUsQ0FBQyxDQUNOLElBQUksQ0FBRSxDQUFDLENBQ1AsTUFBTSxDQUFFLElBQUksQ0FDWixLQUFLLENBQUUsSUFBSSxBQUNiLENBQUEiLCJuYW1lcyI6W10sInNvdXJjZXMiOlsiUmlwcGxlLnN2ZWx0ZSJdfQ== */";
 	append_dev(document.head, style);
 }
 
 function create_fragment(ctx) {
-	let span;
+	let span1;
+	let t;
+	let span0;
 	let ripple_action;
 	let current;
 	let mounted;
@@ -468,25 +462,31 @@ function create_fragment(ctx) {
 
 	const block = {
 		c: function create() {
-			span = element("span");
+			span1 = element("span");
 			if (default_slot) default_slot.c();
-			attr_dev(span, "class", "ripple-container svelte-1jwa37e");
-			add_location(span, file, 5, 0, 137);
+			t = space();
+			span0 = element("span");
+			attr_dev(span0, "class", "ripple svelte-1qfvpiv");
+			add_location(span0, file, 8, 2, 183);
+			attr_dev(span1, "class", "ripple-container svelte-1qfvpiv");
+			add_location(span1, file, 5, 0, 137);
 		},
 		l: function claim(nodes) {
 			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
 		},
 		m: function mount(target, anchor) {
-			insert_dev(target, span, anchor);
+			insert_dev(target, span1, anchor);
 
 			if (default_slot) {
-				default_slot.m(span, null);
+				default_slot.m(span1, null);
 			}
 
+			append_dev(span1, t);
+			append_dev(span1, span0);
 			current = true;
 
 			if (!mounted) {
-				dispose = action_destroyer(ripple_action = ripple.call(null, span, /*color*/ ctx[0]));
+				dispose = action_destroyer(ripple_action = ripple.call(null, span0, /*color*/ ctx[0]));
 				mounted = true;
 			}
 		},
@@ -509,7 +509,7 @@ function create_fragment(ctx) {
 			current = false;
 		},
 		d: function destroy(detaching) {
-			if (detaching) detach_dev(span);
+			if (detaching) detach_dev(span1);
 			if (default_slot) default_slot.d(detaching);
 			mounted = false;
 			dispose();
@@ -530,7 +530,7 @@ function create_fragment(ctx) {
 function instance($$self, $$props, $$invalidate) {
 	let { $$slots: slots = {}, $$scope } = $$props;
 	validate_slots("Ripple", slots, ['default']);
-	let { color = "rgba(144, 144, 144, 0.48)" } = $$props;
+	let { color = "rgba(255, 255, 255, 0.48)" } = $$props;
 	const writable_props = ["color"];
 
 	Object.keys($$props).forEach(key => {
@@ -558,7 +558,7 @@ function instance($$self, $$props, $$invalidate) {
 class Ripple extends SvelteComponentDev {
 	constructor(options) {
 		super(options);
-		if (!document.getElementById("svelte-1jwa37e-style")) add_css();
+		if (!document.getElementById("svelte-1qfvpiv-style")) add_css();
 		init(this, options, instance, create_fragment, safe_not_equal, { color: 0 });
 
 		dispatch_dev("SvelteRegisterComponent", {

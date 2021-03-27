@@ -13,22 +13,7 @@ function applyCss<T extends HTMLElement>(
 }
 
 export function ripple(rippleContainer: HTMLElement, color: string) {
-  if (rippleContainer.children[0]) {
-    applyCss(rippleContainer, {
-      borderRadius: getComputedStyle(rippleContainer.children[0]).borderRadius,
-    });
-  }
-
   function onClick(event: MouseEvent) {
-    // const rippleContainer: HTMLElement | null = node.closest(
-    //   ".ripple-container"
-    // );
-
-    // if (!rippleContainer) {
-    //   console.warn(".ripple-container class not found");
-    //   return;
-    // }
-
     const {
       width,
       height,
@@ -70,17 +55,16 @@ export function ripple(rippleContainer: HTMLElement, color: string) {
       position: "absolute",
       opacity: "0.38",
       borderRadius: "50%",
-      transition: "all 350ms cubic-bezier(0.05, 0.12, 0.15, 0.06)",
+      transform: "scale(0)",
+      transition:
+        "transform 700ms cubic-bezier(0.05, 0.12, 0.15, 0.06), opacity 400ms cubic-bezier(0.05, 0.12, 0.15, 0.06)",
       transitionDelay: "50ms",
       pointerEvents: "none",
     });
 
     setTimeout(() => {
       applyCss(ripple, {
-        width: `${2 * largestSide}px`,
-        height: `${2 * largestSide}px`,
-        top: `${y - largestSide}px`,
-        left: `${x - largestSide}px`,
+        transform: `scale(${largestSide * 0.2}) translate3d(0,0,0)`,
         opacity: "0",
       });
 
@@ -88,7 +72,7 @@ export function ripple(rippleContainer: HTMLElement, color: string) {
         opacity: "0",
         transform: "scale(1) translate3d(0,0,0)",
       });
-    }, 0);
+    }, 16);
 
     rippleContainer.appendChild(ripple);
     rippleContainer.appendChild(tap);
@@ -104,7 +88,7 @@ export function ripple(rippleContainer: HTMLElement, color: string) {
     });
   }
 
-  rippleContainer.addEventListener("click", onClick);
+  rippleContainer.addEventListener("click", onClick, true);
 
   return {
     destroy() {
