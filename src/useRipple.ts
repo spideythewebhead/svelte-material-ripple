@@ -13,6 +13,12 @@ function applyCss<T extends HTMLElement>(
 }
 
 export function ripple(rippleContainer: HTMLElement, color: string) {
+  if (rippleContainer.children[0]) {
+    applyCss(rippleContainer, {
+      borderRadius: getComputedStyle(rippleContainer.children[0]).borderRadius,
+    });
+  }
+
   function onClick(event: MouseEvent) {
     // const rippleContainer: HTMLElement | null = node.closest(
     //   ".ripple-container"
@@ -69,7 +75,7 @@ export function ripple(rippleContainer: HTMLElement, color: string) {
       pointerEvents: "none",
     });
 
-    requestAnimationFrame(() => {
+    setTimeout(() => {
       applyCss(ripple, {
         width: `${2 * largestSide}px`,
         height: `${2 * largestSide}px`,
@@ -82,12 +88,15 @@ export function ripple(rippleContainer: HTMLElement, color: string) {
         opacity: "0",
         transform: "scale(1) translate3d(0,0,0)",
       });
-    });
+    }, 0);
 
     rippleContainer.appendChild(ripple);
     rippleContainer.appendChild(tap);
 
-    ripple.addEventListener("transitionend", () => {
+    ripple.addEventListener("transitionend", function listener() {
+      // handle only 1 event
+      ripple.removeEventListener("transitionend", listener);
+
       setTimeout(() => {
         ripple.remove();
         tap.remove();

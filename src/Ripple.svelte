@@ -2,7 +2,7 @@
   import { ripple } from "./useRipple";
 
   // a css color format
-  export let color = "rgba(0,0,0,.48)";
+  export let color = "rgba(144, 144, 144, 0.48)";
 </script>
 
 <span class="ripple-container" use:ripple={color}>
@@ -14,6 +14,5 @@
     position: relative;
     overflow: hidden;
     display: inline-block;
-    border-radius: inherit;
   }
 </style>

@@ -369,6 +369,11 @@ function applyCss(context, styles) {
     return context;
 }
 function ripple(rippleContainer, color) {
+    if (rippleContainer.children[0]) {
+        applyCss(rippleContainer, {
+            borderRadius: getComputedStyle(rippleContainer.children[0]).borderRadius,
+        });
+    }
     function onClick(event) {
         // const rippleContainer: HTMLElement | null = node.closest(
         //   ".ripple-container"
@@ -410,7 +415,7 @@ function ripple(rippleContainer, color) {
             transitionDelay: "50ms",
             pointerEvents: "none",
         });
-        requestAnimationFrame(() => {
+        setTimeout(() => {
             applyCss(ripple, {
                 width: `${2 * largestSide}px`,
                 height: `${2 * largestSide}px`,
@@ -422,10 +427,12 @@ function ripple(rippleContainer, color) {
                 opacity: "0",
                 transform: "scale(1) translate3d(0,0,0)",
             });
-        });
+        }, 0);
         rippleContainer.appendChild(ripple);
         rippleContainer.appendChild(tap);
-        ripple.addEventListener("transitionend", () => {
+        ripple.addEventListener("transitionend", function listener() {
+            // handle only 1 event
+            ripple.removeEventListener("transitionend", listener);
             setTimeout(() => {
                 ripple.remove();
                 tap.remove();
@@ -445,8 +452,8 @@ const file = "src/Ripple.svelte";
 
 function add_css() {
 	var style = element("style");
-	style.id = "svelte-jk3q0v-style";
-	style.textContent = ".ripple-container.svelte-jk3q0v{position:relative;overflow:hidden;display:inline-block;border-radius:inherit}\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiUmlwcGxlLnN2ZWx0ZSIsIm1hcHBpbmdzIjoiQUFXRSxpQkFBaUIsY0FBQyxDQUFBLEFBQ2hCLFFBQVEsQ0FBRSxRQUFRLENBQ2xCLFFBQVEsQ0FBRSxNQUFNLENBQ2hCLE9BQU8sQ0FBRSxZQUFZLENBQ3JCLGFBQWEsQ0FBRSxPQUFPLEFBQ3hCLENBQUEiLCJuYW1lcyI6W10sInNvdXJjZXMiOlsiUmlwcGxlLnN2ZWx0ZSJdfQ== */";
+	style.id = "svelte-1jwa37e-style";
+	style.textContent = ".ripple-container.svelte-1jwa37e{position:relative;overflow:hidden;display:inline-block}\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiUmlwcGxlLnN2ZWx0ZSIsIm1hcHBpbmdzIjoiQUFZRSxpQkFBaUIsZUFBQyxDQUFBLEFBQ2hCLFFBQVEsQ0FBRSxRQUFRLENBQ2xCLFFBQVEsQ0FBRSxNQUFNLENBQ2hCLE9BQU8sQ0FBRSxZQUFZLEFBQ3ZCLENBQUEiLCJuYW1lcyI6W10sInNvdXJjZXMiOlsiUmlwcGxlLnN2ZWx0ZSJdfQ== */";
 	append_dev(document.head, style);
 }
 
@@ -463,8 +470,8 @@ function create_fragment(ctx) {
 		c: function create() {
 			span = element("span");
 			if (default_slot) default_slot.c();
-			attr_dev(span, "class", "ripple-container svelte-jk3q0v");
-			add_location(span, file, 5, 0, 127);
+			attr_dev(span, "class", "ripple-container svelte-1jwa37e");
+			add_location(span, file, 5, 0, 137);
 		},
 		l: function claim(nodes) {
 			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -523,7 +530,7 @@ function create_fragment(ctx) {
 function instance($$self, $$props, $$invalidate) {
 	let { $$slots: slots = {}, $$scope } = $$props;
 	validate_slots("Ripple", slots, ['default']);
-	let { color = "rgba(0,0,0,.48)" } = $$props;
+	let { color = "rgba(144, 144, 144, 0.48)" } = $$props;
 	const writable_props = ["color"];
 
 	Object.keys($$props).forEach(key => {
@@ -551,7 +558,7 @@ function instance($$self, $$props, $$invalidate) {
 class Ripple extends SvelteComponentDev {
 	constructor(options) {
 		super(options);
-		if (!document.getElementById("svelte-jk3q0v-style")) add_css();
+		if (!document.getElementById("svelte-1jwa37e-style")) add_css();
 		init(this, options, instance, create_fragment, safe_not_equal, { color: 0 });
 
 		dispatch_dev("SvelteRegisterComponent", {
