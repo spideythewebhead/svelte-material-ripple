@@ -1,6 +1,8 @@
 const kTapSize = 32;
 const kTapSizeHalf = 16;
 
+let _rippleColor = "rgba(255, 255, 255, .48)";
+
 function applyCss<T extends HTMLElement>(
   context: T,
   styles: Partial<CSSStyleDeclaration>
@@ -12,7 +14,14 @@ function applyCss<T extends HTMLElement>(
   return context;
 }
 
-export function ripple(rippleContainer: HTMLElement, color: string) {
+export function setGlobalRippleColor(color: string) {
+  _rippleColor = color;
+}
+
+export function ripple(
+  rippleContainer: HTMLElement,
+  color: string = _rippleColor
+) {
   function onClick(event: MouseEvent) {
     const {
       width,
@@ -57,20 +66,20 @@ export function ripple(rippleContainer: HTMLElement, color: string) {
       borderRadius: "50%",
       transform: "scale(0)",
       transition:
-        "transform 700ms cubic-bezier(0.05, 0.12, 0.15, 0.06), opacity 400ms cubic-bezier(0.05, 0.12, 0.15, 0.06)",
-      transitionDelay: "50ms",
+        "transform 400ms cubic-bezier(0.05, 0.12, 0.15, 0.06), opacity 600ms cubic-bezier(0.05, 0.12, 0.15, 0.06)",
+      transitionDelay: "100ms",
       pointerEvents: "none",
     });
 
     setTimeout(() => {
       applyCss(ripple, {
-        transform: `scale(${largestSide * 0.2}) translate3d(0,0,0)`,
+        transform: `scale(${largestSide * 0.06})`,
         opacity: "0",
       });
 
       applyCss(tap, {
         opacity: "0",
-        transform: "scale(1) translate3d(0,0,0)",
+        transform: "scale(1)",
       });
     }, 16);
 
@@ -88,7 +97,7 @@ export function ripple(rippleContainer: HTMLElement, color: string) {
     });
   }
 
-  rippleContainer.addEventListener("click", onClick, true);
+  rippleContainer.addEventListener("click", onClick);
 
   return {
     destroy() {

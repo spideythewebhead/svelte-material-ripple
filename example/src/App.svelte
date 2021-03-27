@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { Ripple } from "svelte-material-ripple";
+  import { ripple, setGlobalRippleColor } from "svelte-material-ripple";
+
+  setGlobalRippleColor("orange");
 </script>
 
 <main>
-  <Ripple>
-    <button class="mat-button">Material Button</button>
-  </Ripple>
+  <button use:ripple class="mat-button">Material Button</button>
 </main>
 
 <style>
@@ -23,6 +23,7 @@
   }
 
   .mat-button {
+    position: relative;
     border: none;
     outline: none;
     padding: 0.75em 1em;
@@ -36,9 +37,10 @@
     transition: all 200ms;
     font-family: "Roboto";
     font-size: 0.9em;
+    overflow: hidden;
   }
 
   .mat-button:active {
-    box-shadow: 0px 4px 4px -1px rgba(0, 0, 0, 0.48);
+    box-shadow: 0px 2px 4px 1px rgba(0, 0, 0, 0.48);
   }
 </style>
