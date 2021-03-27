@@ -1,5 +1,6 @@
 <script lang="ts">
   import { ripple } from "./useRipple";
+
   // a css color format
   export let color = "rgba(0,0,0,.48)";
 </script>
